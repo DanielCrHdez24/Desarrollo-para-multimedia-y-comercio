@@ -1,0 +1,237 @@
+/* CSS del sitio */
+
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+body {
+    font-family: 'Bangers', cursive;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    color: #0a1af1;
+}
+
+header {
+    background-color: red;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    text-shadow: -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        1px 1px 0 black;
+
+}
+
+main {
+    padding: 2rem;
+}
+
+.screen {
+    display: none;
+    padding: 1rem;
+}
+
+.screen.active {
+    display: block;
+}
+
+h1 {
+    color: #0a1af1;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+button {
+    display: block;
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkred;
+}
+
+.post {
+    background-color: white;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.post p {
+    font-size: 1.2rem;
+    color: #333;
+    font-family: 'Arial'
+}
+
+.post span {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: gray;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form input,
+textarea {
+    width: calc(100% - 2rem);
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Pantallas Azules */
+
+.screen-blue {
+    background-color: blue;
+    color: white;
+}
+
+.screen-blue nav ul li a {
+    color: yellow;
+}
+
+.screen-blue h1 {
+    color: yellow;
+}
+
+.screen-blue button {
+    background-color: white;
+    color: blue;
+    border: 2px solid white;
+}
+
+.screen-blue button:hover {
+    background-color: lightblue;
+    color: darkblue;
+}
+
+/* Logo clan */
+
+.logo {
+    position: absolute;
+    bottom: 80px;
+    left: 20px;
+    width: 150px;
+}
+
+.logo img {
+    max-width: 100%;
+    height: auto;
+}
+
+/*Pie de Página */
+
+footer {
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+footer a {
+    color: #ffcc00;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    position: relative;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+/*catálogo*/
+.catalogo {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.producto {
+    text-align: center;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 200px;
+}
+
+.producto img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.producto h2 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.producto p {
+    font-size: 14px;
+    color: #555;
+}
+
+.precio {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #e74c3c;
+}
