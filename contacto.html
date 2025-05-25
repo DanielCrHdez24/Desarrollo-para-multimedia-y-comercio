@@ -1,17 +1,24 @@
+<div class="container py-4"> <h1 class="text-center mb-4">Solicitud de Contacto</h1> <form action="contacto.php" method="POST" class="mx-auto" style="max-width: 400px;">
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre Completo:</label>
+            <input type="text" id="name" name="name" placeholder="Ingresa tu nombre completo" required class="form-control">
+        </div>
 
-    <h1>Solicitud de Contacto</h1>
-    <form action="contacto.php" method="POST">
+        <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono:</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="Ingresa tu número de teléfono" required class="form-control">
+        </div>
 
-        <label for="name">Nombre Completo:</label>
-        <input type="name" id="name" name="name" placeholder="Ingresa tu nombre completo" required>
-        <label for="telefono">Teléfono:</label>
-        <input type="telefono" id="telefono" name="telefono" placeholder="Ingresa tu número de teléfono" required>
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico:</label>
+            <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required class="form-control">
+        </div>
 
-        <label for="email">Correo electrónico:</label>
-        <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required>
+        <div class="mb-3">
+            <label for="message" class="form-label">Mensaje:</label>
+            <textarea id="message" name="message" placeholder="Ingresa tu Mensaje" required class="form-control" rows="4"></textarea>
+        </div>
 
-        <label for="message">Mensaje:</label>
-        <input type="message" id="message" name="message" placeholder="Ingresa tu Mensaje" required>
-
-        <button type="submit">Contácteme</button>
-    </form>
+        <button type="submit" class="btn btn-primary d-block w-100 mt-4">Contácteme</button>
+        </form>
+</div>
