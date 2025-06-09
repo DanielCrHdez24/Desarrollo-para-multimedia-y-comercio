@@ -8,10 +8,17 @@
     <link rel="stylesheet" href="styles.css" />
 
 </head>
+
 <body>
 <div class="container-fluid text-center">
     <h1 class="my-4">¡Llévele, barato!</h1>
 
+    <!-- Barra de búsqueda -->
+    <div class="mb-4">
+        <input type="text" id="busqueda" class="form-control w-50 mx-auto" placeholder="Buscar por nombre o descripción...">
+    </div>
+
+    <!-- Contenedor de productos -->
     <div class="catalogo row justify-content-center g-4">
         <?php
         $servername = "localhost";
@@ -58,6 +65,26 @@
     </div>
 </div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const inputBusqueda = document.getElementById('busqueda');
+    const productos = document.querySelectorAll('.producto');
+
+    inputBusqueda.addEventListener('input', function () {
+        const termino = this.value.toLowerCase();
+
+        productos.forEach(producto => {
+            const nombre = producto.querySelector('h2').textContent.toLowerCase();
+            const descripcion = producto.querySelector('p').textContent.toLowerCase();
+            const coincide = nombre.includes(termino) || descripcion.includes(termino);
+            producto.style.display = coincide ? '' : 'none';
+        });
+    });
+});
+</script>
+
 </body>
 </html>
