@@ -6,12 +6,30 @@
     <title>Catálogo de Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css" />
-
 </head>
 
 <body>
 <div class="container-fluid text-center">
     <h1 class="my-4">¡Llévele, barato!</h1>
+
+    <!-- Conexión -->
+    <?php
+    $conexion = new mysqli("localhost", "root", "", "tiendavirtual");
+    $conexion->set_charset("utf8");
+    ?>
+
+    <!-- Menú de categorías -->
+    <div class="mb-3">
+        <select id="categoriaSelect" class="form-select w-50 mx-auto">
+            <option value="todas">Todas las categorías</option>
+            <?php
+            $categorias = $conexion->query("SELECT id, nombre FROM categorias");
+            while ($cat = $categorias->fetch_assoc()) {
+                echo '<option value="' . htmlspecialchars($cat["nombre"]) . '">' . htmlspecialchars($cat["nombre"]) . '</option>';
+            }
+            ?>
+        </select>
+    </div>
 
     <!-- Barra de búsqueda -->
     <div class="mb-4">
@@ -21,17 +39,6 @@
     <!-- Contenedor de productos -->
     <div class="catalogo row justify-content-center g-4">
         <?php
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "tiendavirtual";
-
-        $conexion = new mysqli($servername, $username, $password, $dbname);
-
-        if ($conexion->connect_error) {
-            die("Conexión fallida: " . $conexion->connect_error);
-        }
-
         $sql = "SELECT 
                     p.nombre, 
                     p.descripcion, 
@@ -47,13 +54,13 @@
         if ($resultado && $resultado->num_rows > 0) {
             while ($row = $resultado->fetch_assoc()) {
                 echo '
-                <div class="producto col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="producto col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-categoria="' . htmlspecialchars($row["nombre_categoria"]) . '">
                     <img src="' . htmlspecialchars($row["imagen_url"]) . '" alt="' . htmlspecialchars($row["nombre"]) . '" class="img-fluid rounded" />
                     <h2>' . htmlspecialchars($row["nombre"]) . '</h2>
                     <p>' . htmlspecialchars($row["descripcion"]) . '</p>
                     <span class="precio">$' . number_format($row["precio"], 2) . '</span>
                     <span class="existencia">' . htmlspecialchars($row["existencia"]) . ' pzas</span>
-                    <span class="categoria">' . htmlspecialchars($row["nombre_categoria"]) . '</span>
+                    <span class="categoria badge bg-secondary">' . htmlspecialchars($row["nombre_categoria"]) . '</span>
                 </div>';
             }
         } else {
@@ -71,18 +78,27 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const inputBusqueda = document.getElementById('busqueda');
+    const selectCategoria = document.getElementById('categoriaSelect');
     const productos = document.querySelectorAll('.producto');
 
-    inputBusqueda.addEventListener('input', function () {
-        const termino = this.value.toLowerCase();
+    function filtrarProductos() {
+        const termino = inputBusqueda.value.toLowerCase();
+        const categoriaSeleccionada = selectCategoria.value;
 
         productos.forEach(producto => {
             const nombre = producto.querySelector('h2').textContent.toLowerCase();
             const descripcion = producto.querySelector('p').textContent.toLowerCase();
-            const coincide = nombre.includes(termino) || descripcion.includes(termino);
-            producto.style.display = coincide ? '' : 'none';
+            const categoria = producto.getAttribute('data-categoria');
+
+            const coincideBusqueda = nombre.includes(termino) || descripcion.includes(termino);
+            const coincideCategoria = categoriaSeleccionada === 'todas' || categoria === categoriaSeleccionada;
+
+            producto.style.display = (coincideBusqueda && coincideCategoria) ? '' : 'none';
         });
-    });
+    }
+
+    inputBusqueda.addEventListener('input', filtrarProductos);
+    selectCategoria.addEventListener('change', filtrarProductos);
 });
 </script>
 
