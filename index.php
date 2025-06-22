@@ -26,6 +26,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'inicio';
             <ul>
                 <li><a href="index.php?page=inicio">Inicio</a></li>
                 <li><a href="index.php?page=catalogo-venta">Nuestra Merch</a></li>
+                <li><a href="index.php?page=inicio-sesion">Iniciar Sesión</a></li>
+                <li><a href="index.php?page=registro">Registrarse</a></li>
                 <li><a href="index.php?page=contacto">Contacto</a></li>
             </ul>
         </nav>
@@ -33,13 +35,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'inicio';
 
     <main>
         <?php
-        // Verificar si el usuario está logueado
-        if (isset($_SESSION['usuario_nombre'])) {
-            echo "¡Bienvenido @" . $_SESSION['usuario_nombre'] . "!";
-        } else {
-            echo "¡Bienvenido visitante! Inicia sesión o regístrate.";
-        }
-
+        
         // Cargar el contenido de la página solicitada
         switch ($page) {
             case 'inicio':
@@ -50,6 +46,12 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'inicio';
                 break;
             case 'contacto':
                 include 'contacto.html';
+                break;
+                case 'inicio-sesion':
+                include 'login.php';
+                break;
+                case 'registro':
+                include 'registro.php';
                 break;
             default:
                 include 'inicio.html'; // Página predeterminada si no se especifica ninguna
