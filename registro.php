@@ -1,5 +1,7 @@
 <?php
 $mensaje = "";
+$tipoMensaje = "";
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $conexion = new mysqli("localhost", "root", "", "tiendavirtual");
     $conexion->set_charset("utf8");
@@ -11,41 +13,49 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($password !== $confirmar) {
         $mensaje = "Las contraseñas no coinciden.";
+        $tipoMensaje = "danger";
     } else {
         $existe = $conexion->query("SELECT id FROM clientes WHERE email = '$email'");
         if ($existe && $existe->num_rows > 0) {
             $mensaje = "Este email ya está registrado.";
+            $tipoMensaje = "warning";
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $insertar = $conexion->query("INSERT INTO clientes (nombre, email, password) VALUES ('$nombre', '$email', '$hash')");
             if ($insertar) {
                 $mensaje = "Registro exitoso. Ya puedes iniciar sesión.";
+                $tipoMensaje = "success";
             } else {
                 $mensaje = "Error al registrar.";
+                $tipoMensaje = "danger";
             }
         }
     }
+
     $conexion->close();
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><title>Registro</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h2>Registro de cliente</h2>
-    <div class="container mt-5">
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow">
                 <div class="card-body">
                     <h3 class="text-center mb-4">Registro de cliente</h3>
 
-                    <?php if ($mensaje): ?>
-                        <div class="alert alert-<?= $tipoMensaje ?> text-center"><?= $mensaje ?></div>
+                    <?php if (!empty($mensaje)): ?>
+                        <div class="alert alert-<?= htmlspecialchars($tipoMensaje) ?> text-center">
+                            <?= htmlspecialchars($mensaje) ?>
+                        </div>
                     <?php endif; ?>
 
                     <form method="POST">
@@ -80,5 +90,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
     </div>
 </div>
+
+<!-- Scripts de Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
