@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    $sql = "SELECT * FROM clientes WHERE email = ?";
+    $sql = "SELECT id, nombre, password FROM clientes WHERE email = ?"; // Seleccionamos también el ID
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -22,7 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $usuario = $resultado->fetch_assoc();
         if (password_verify($password, $usuario['password'])) {
             $_SESSION["usuario"] = $usuario["nombre"];
-            header("Location: index.php");
+            $_SESSION["user_id"] = $usuario["id"]; // Almacena el ID del usuario en la sesión
+            header("Location: producto.php"); // Redirige al catálogo de productos
             exit();
         } else {
             $mensaje = "Contraseña incorrecta.";
