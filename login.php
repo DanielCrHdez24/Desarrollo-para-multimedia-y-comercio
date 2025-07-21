@@ -23,6 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $usuario['password'])) {
             $_SESSION["usuario"] = $usuario["nombre"];
             $_SESSION["user_id"] = $usuario["id"]; // Almacena el ID del usuario en la sesión
+            $_SESSION["loggedin"] = true;
+
             header("Location: producto.php"); // Redirige al catálogo de productos
             exit();
         } else {

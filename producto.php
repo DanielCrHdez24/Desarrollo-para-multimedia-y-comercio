@@ -1,8 +1,16 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+// Conexión principal
+$conexion = new mysqli("localhost", "root", "", "tiendavirtual");
+$conexion->set_charset("utf8");
+if ($conexion->connect_error) {
+    die("La conexión a la base de datos falló: " . $conexion->connect_error);
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,40 +25,33 @@ if (session_status() === PHP_SESSION_NONE) {
 <div class="container-fluid text-center">
     <h1 class="my-4">¡Llévele, barato!</h1>
 
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="producto.php">Mi Tienda</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="contacto.html">Contacto</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
                     <li class="nav-item">
                         <a class="nav-link" href="carrito.php">
                             Carrito
                             <?php
                             $cart_item_count = 0;
-                            // Conectar a la base de datos para obtener el número de ítems en el carrito
-                            // Esta conexión es temporal para el menú, la principal está más abajo.
                             $conexion_cart_count = new mysqli("localhost", "root", "", "tiendavirtual");
                             $conexion_cart_count->set_charset("utf8");
-                            if ($conexion_cart_count->connect_error) {
-                                error_log("Error de conexión en navbar: " . $conexion_cart_count->connect_error);
-                            } else {
-                                if (isset($_SESSION['user_id'])) { // Usamos 'user_id' que se guarda en login.php
-                                    $user_id = $_SESSION['user_id'];
-                                    $stmt_count = $conexion_cart_count->prepare("SELECT SUM(cantidad) AS total_items FROM carrito WHERE cliente_id = ?");
-                                    if ($stmt_count) {
-                                        $stmt_count->bind_param("i", $user_id);
-                                        $stmt_count->execute();
-                                        $result_count = $stmt_count->get_result();
-                                        $row_count = $result_count->fetch_assoc();
-                                        $cart_item_count = $row_count['total_items'] ? $row_count['total_items'] : 0;
-                                        $stmt_count->close();
-                                    }
+                            if (!$conexion_cart_count->connect_error && isset($_SESSION['user_id'])) {
+                                $user_id = $_SESSION['user_id'];
+                                $stmt_count = $conexion_cart_count->prepare("SELECT SUM(cantidad) AS total_items FROM carrito WHERE cliente_id = ?");
+                                if ($stmt_count) {
+                                    $stmt_count->bind_param("i", $user_id);
+                                    $stmt_count->execute();
+                                    $result_count = $stmt_count->get_result();
+                                    $row_count = $result_count->fetch_assoc();
+                                    $cart_item_count = $row_count['total_items'] ?? 0;
+                                    $stmt_count->close();
                                 }
                             }
                             $conexion_cart_count->close();
@@ -59,7 +60,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <?php if (isset($_SESSION['user_id'])): // Usa 'user_id' para verificar sesión ?>
+                        <?php if (isset($_SESSION['user_id'])): ?>
                             <a class="nav-link" href="logout.php">Cerrar Sesión</a>
                         <?php else: ?>
                             <a class="nav-link" href="login.php">Iniciar Sesión</a>
@@ -70,24 +71,13 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </nav>
 
-    <?php
-    // Mostrar mensaje si el usuario no ha iniciado sesión
-    if (!isset($_SESSION['user_id'])): ?>
+    <?php if (!isset($_SESSION['user_id'])): ?>
         <div class="alert alert-info text-center mt-3" role="alert">
-            Por favor, **inicie sesión** para agregar productos al carrito y realizar su compra.
+            Por favor, <strong>inicie sesión</strong> para agregar productos al carrito y realizar su compra.
         </div>
     <?php endif; ?>
 
-
-    <?php
-    $conexion = new mysqli("localhost", "root", "", "tiendavirtual");
-    $conexion->set_charset("utf8");
-    // Verificar conexión
-    if ($conexion->connect_error) {
-        die("La conexión a la base de datos falló: " . $conexion->connect_error);
-    }
-    ?>
-
+    <!-- FILTRO POR CATEGORÍA -->
     <div class="mb-3">
         <select id="categoriaSelect" class="form-select w-50 mx-auto">
             <option value="todas">Todas las categorías</option>
@@ -100,10 +90,12 @@ if (session_status() === PHP_SESSION_NONE) {
         </select>
     </div>
 
+    <!-- BÚSQUEDA -->
     <div class="mb-4">
         <input type="text" id="busqueda" class="form-control w-50 mx-auto" placeholder="Buscar por nombre o descripción...">
     </div>
 
+    <!-- CATÁLOGO -->
     <div class="catalogo row justify-content-center g-4">
         <?php
         $sql = "SELECT
@@ -144,8 +136,10 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
 </div>
 
+<!-- BOOTSTRAP JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- JS DE FILTRO -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const inputBusqueda = document.getElementById('busqueda');
@@ -172,6 +166,39 @@ document.addEventListener('DOMContentLoaded', function () {
     selectCategoria.addEventListener('change', filtrarProductos);
 });
 </script>
+
+<!-- CHAT (solo si está logueado) -->
+<?php if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true): ?>
+    <div id="chatbox"></div>
+    <form id="chatForm">
+        <input type="text" id="usermsg" placeholder="Escribe tu mensaje..." required>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+    $(function(){
+        function cargarMensajes() {
+            $("#chatbox").load("cargar_chat.php");
+        }
+
+        $("#chatForm").submit(function(e){
+            e.preventDefault();
+            $.post("gmensaje.php", {
+                mensaje: $("#usermsg").val()
+            }, function(){
+                $("#usermsg").val("");
+                cargarMensajes();
+            });
+        });
+
+        setInterval(cargarMensajes, 2500);
+        cargarMensajes();
+    });
+    </script>
+<?php else: ?>
+    <p class="text-center text-muted mt-4">Debes iniciar sesión para usar el chat.</p>
+<?php endif; ?>
 
 </body>
 </html>

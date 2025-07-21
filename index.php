@@ -1,8 +1,5 @@
 <?php
-// Inicia la sesión
 session_start();
-
-// Verifica qué página se está solicitando
 $page = isset($_GET['page']) ? $_GET['page'] : 'inicio';
 ?>
 
@@ -10,33 +7,41 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'inicio';
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>El Clan del Juego</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-
     <!-- Cabecera con navegación -->
     <header>
         <nav>
             <ul>
                 <li><a href="index.php?page=inicio">Inicio</a></li>
                 <li><a href="index.php?page=catalogo-venta">Nuestra Merch</a></li>
-                <li><a href="index.php?page=inicio-sesion">Iniciar Sesión</a></li>
-                <li><a href="index.php?page=registro">Registrarse</a></li>
+
+                <?php if (isset($_SESSION['admin_loggedin']) && $_SESSION['admin_loggedin'] === true): ?>
+                    <li><a href="admin.php">Panel Admin</a></li>
+                    <li><a href="logout_admin.php">Cerrar Sesión</a></li>
+                <?php elseif (isset($_SESSION['user_id'])): ?>
+                    <li><a href="carrito.php">Carrito</a></li>
+                    <li><a href="logout.php">Cerrar Sesión</a></li>
+                <?php else: ?>
+                    <li><a href="index.php?page=inicio-sesion">Iniciar Sesión</a></li>
+                    <li><a href="index.php?page=registro">Registrarse</a></li>
+                <?php endif; ?>
+
                 <li><a href="index.php?page=contacto">Contacto</a></li>
+                <li><a href="login_admin.php">Administrador</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         <?php
-        
-        // Cargar el contenido de la página solicitada
         switch ($page) {
             case 'inicio':
                 include 'inicio.html';
@@ -45,31 +50,29 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'inicio';
                 include 'producto.php';
                 break;
             case 'contacto':
-                include 'contacto.html';
+                include 'contacto.php';
                 break;
-                case 'inicio-sesion':
+            case 'inicio-sesion':
                 include 'login.php';
                 break;
-                case 'registro':
+            case 'registro':
                 include 'registro.php';
                 break;
             default:
-                include 'inicio.html'; // Página predeterminada si no se especifica ninguna
+                include 'inicio.html';
                 break;
         }
         ?>
     </main>
 
-    <!-- Pie de página -->
     <footer>
         <p>&copy; 2025 El Clan del Juego. Todos los derechos reservados.</p>
         <p>Síguenos en:
-            <a href="https://www.facebook.com" target="_blank">Facebook</a> |
-            <a href="https://x.com" target="_blank">Twitter/X</a> |
-            <a href="https://www.instagram.com" target="_blank">Instagram</a>
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a> |
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer">Twitter/X</a> |
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
         </p>
     </footer>
-
 </body>
 
 </html>
